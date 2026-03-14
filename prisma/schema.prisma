@@ -10,61 +10,88 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 //one to many
-model Category{
-  id Int @id @default(autoincrement())
-  name String @unique
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
   books Book[]
 }
 
-model Publisher{
-  id Int @id @default(autoincrement())
-  name String
+model Publisher {
+  id    Int    @id @default(autoincrement())
+  name  String
   books Book[]
 }
 
-model Book{
-  id Int @id @default(autoincrement())
+model Book {
+  id    Int    @id @default(autoincrement())
   title String
-  year Int
+  year  Int
 
   categoryId Int
-  category Category @relation(fields: [categoryId],references:[id])
+  category   Category @relation(fields: [categoryId], references: [id])
 
   publisherId Int?
-  publisher Publisher?@relation(fields: [publisherId], references: [id])
+  publisher   Publisher? @relation(fields: [publisherId], references: [id])
 
   authors Author[] @relation("BooksAuthors")
-
+  loans   Loan[]
 }
 
-model Author{
-  id Int @id @default(autoincrement())
-  name String
-  books Book[] @relation("BooksAuthors")
+model Author {
+  id      Int      @id @default(autoincrement())
+  name    String
+  books   Book[]   @relation("BooksAuthors")
   profile Profile?
 }
 
-model Profile{
-  id Int @id @default(autoincrement())
-  bio String
-  author Author @relation(fields: [authorId], references: [id])
-  authorId Int @unique
+model Profile {
+  id       Int    @id @default(autoincrement())
+  bio      String
+  author   Author @relation(fields: [authorId], references: [id])
+  authorId Int    @unique
 }
 
+model Member {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  loans     Loan[]
+}
 
-//npx prisma init
-// npx prisma db push
+model Loan {
+  id         Int       @id @default(autoincrement())
+  loanDate   DateTime  @default(now())
+  returnDate DateTime?
+  memberId   Int
+  member     Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  bookId     Int
+  book       Book      @relation(fields: [bookId], references: [id])
+
+  @@index([memberId])
+}
+
+// --- Command Prisma ---
+
+// 1. npx prisma init - inisialisasi Prisma
+// 2. Edit schema.prisma
+// 3. npx prisma format - format schema
+// 4. npx prisma migrate dev --name init (init bisa diganti dengan kalimat lain e.g: add-loan-table) - Membuat migration + update database
+// 5. npx prisma generate - generate Prisma client
+// 6. npx prisma db seed - Seed database (isi data awal jika sudah ada datanya)
+
+// Additional:
+// npx prisma studio (local) - Prisma Studio (GUI database)
+// npx prisma db push - push ke database
+
+// install ulang prisma
+// rm -rf node_modules
+// rm package-lock.json
+// npm install
 // npx prisma generate
-// npx prisma db seed
-// npx prisma studio (local)
-//npx prisma migrate dev
-
-//rm -rf node_modules
-//rm package-lock.json
-//npm install
-//npx prisma generate
-

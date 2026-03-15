@@ -39,3 +39,12 @@ Generate ulang client:
 ```bash
 npx prisma generate
 ```
+
+## Install zod & Swagger
+
+1. Install zod
+```npm install zod```
+2. Install Swagger UI
+```npm install swagger-ui-express swagger-jsdoc```
+```npm install -D @types/swagger-ui-express````
+```npm install -D @types/swagger-jsdoc```

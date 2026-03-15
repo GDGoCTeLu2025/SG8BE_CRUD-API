@@ -1,0 +1,106 @@
+openapi: 3.0.0
+info:
+  title: Library API
+  version: 1.0.0
+  description: Library API Documentation
+
+servers:
+  - url: http://localhost:3000
+
+tags:
+  - name: Category
+
+paths:
+
+# CATEGORY
+
+  /categories:
+    get:
+      tags: [Category]
+      summary: Get all categories
+      responses:
+        200:
+          description: List categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+
+    post:
+      tags: [Category]
+      summary: Create category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategory'
+      responses:
+        201:
+          description: Category created
+
+  /categories/{id}:
+    get:
+      tags: [Category]
+      summary: Get category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Category detail
+
+    put:
+      tags: [Category]
+      summary: Update category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategory'
+      responses:
+        200:
+          description: Category updated
+
+    delete:
+      tags: [Category]
+      summary: Delete category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Category deleted
+
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    CreateCategory:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
